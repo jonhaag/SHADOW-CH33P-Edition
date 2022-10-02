@@ -1,11 +1,11 @@
 // =======================================================================================
 //                 SHADOW :  Small Handheld Arduino Droid Operating Wand
 // =======================================================================================
-//                          Last Revised Date: 5/17/2021
+//                          Last Revised Date: 3/26/2022
 //                             Written By: KnightShade
 //                        Inspired by the PADAWAN by danf
 //                      Bug Fixes from BlackSnake and vint43
-//	       Contributions for PWM Motor Controllers by JoyMonkey/Paul Murphy
+//         Contributions for PWM Motor Controllers by JoyMonkey/Paul Murphy
 //                            With credit to Brad/BHD
 //                             Customized by jonhaag
 // =======================================================================================
@@ -72,7 +72,7 @@ byte drivespeed2 = 100;  //Recommend beginner: 50 to 75, experienced: 100 to 127
 byte turnspeed = 75; //50;     // the higher this number the faster it will spin in place, lower - easier to control.
                          // Recommend beginner: 40 to 50, experienced: 50 $ up, I like 75
 
-byte domespeed = 100;    // If using a speed controller for the dome, sets the top speed
+byte domespeed = 120;    // If using a speed controller for the dome, sets the top speed
                          // Use a number up to 127 for serial
 
 byte ramping = 3; //3;        // Ramping- the lower this number the longer R2 will take to speedup or slow down,
@@ -84,9 +84,9 @@ byte joystickDomeDeadZoneRange = 10;  // For controllers that centering problems
 byte driveDeadBandRange = 10;     // Used to set the Sabertooth DeadZone for foot motors
 
 int invertTurnDirection = 1;   //This may need to be set to 1 for some configurations
-byte domeAutoSpeed = 50;     // Speed used when dome automation is active (1- 127)
-int time360DomeTurnLeft = 800;  // milliseconds for dome to complete 360 turn at domeAutoSpeed
-int time360DomeTurnRight = 700;  // milliseconds for dome to complete 360 turn at domeAutoSpeed
+byte domeAutoSpeed = 75;     // Speed used when dome automation is active (1- 127)
+int time360DomeTurnLeft = 700;  // milliseconds for dome to complete 360 turn at domeAutoSpeed
+int time360DomeTurnRight = 600;  // milliseconds for dome to complete 360 turn at domeAutoSpeed
                                 ///Cut in half to reduce spin.  Offset for different rotation startups due to gearing.
 
 //#define TEST_CONROLLER   //Support coming soon
@@ -358,7 +358,7 @@ boolean isDomeMotorStopped = true;
 boolean isPS3NavigatonInitialized = false;
 boolean isSecondaryPS3NavigatonInitialized = false;
 
-byte vol = 60; // 0 = full volume, 255 off
+byte vol = 30; // 0 = full volume, 255 off
 boolean isStickEnabled = true;
 byte isAutomateDomeOn = false;
 unsigned long automateMillis = 0;
@@ -502,7 +502,7 @@ boolean readUSB()
       flushAndroidTerminal();
       return false;
     }
-	//Fix backported from Shadow_MD to fix "Dome Twitch"
+  //Fix backported from Shadow_MD to fix "Dome Twitch"
     if (criticalFaultDetectNav2())
     { 
       //We have a fault condition that we want to ensure that we do NOT process any controller data!!!
@@ -708,7 +708,7 @@ void automateDome()
                 action = random(1, 5);
           
                 if (action > 1) {
-                  trigger.play(random(16, 36));
+                  trigger.play(random(1, 20));
                   
                   #ifdef SHADOW_DEBUG
                     output += "Playing random sound \r\n";
@@ -1231,7 +1231,7 @@ int ps3DomeDrive(PS3BT* myPS3 = PS3Nav, int controllerNumber = 1)
         if ( abs(joystickPosition-128) < joystickDomeDeadZoneRange ) 
           domeRotationSpeed = 0;
           
-		//TODO: DMB:  do we want to automatically disable dome automation?
+    //TODO: DMB:  do we want to automatically disable dome automation?
         /*        if (domeRotationSpeed != 0 && isAutomateDomeOn == true)  // Turn off dome automation if manually moved
         {   
             isAutomateDomeOn = false; 
@@ -1243,7 +1243,7 @@ int ps3DomeDrive(PS3BT* myPS3 = PS3Nav, int controllerNumber = 1)
             #endif
 
         }
-		*/
+    */
     }
     return domeRotationSpeed;
 }
@@ -1296,20 +1296,20 @@ boolean adafruitPs3Holoprojector(PS3BT* myPS3 = PS3Nav, int controllerNumber = 1
     if( !(myPS3->getButtonPress(PS)) && myPS3->getButtonClick(L3))
     {
 //        if (holoLightFrontStatus != HOLO_LED_OFF)
-//	{
+//  {
 //            #ifdef SHADOW_DEBUG      
 //              output += "Turning Off Holo Light\r\n";
 //            #endif
 //            holoLightFrontStatus = HOLO_LED_OFF;
 //            holoLightOff(HOLO_FRONT_RED_PWM_PIN, HOLO_FRONT_GREEN_PWM_PIN, HOLO_FRONT_BLUE_PWM_PIN);
-//	} else
-//	{
+//  } else
+//  {
 //            #ifdef SHADOW_DEBUG      
 //              output += "Turning On Holo Light\r\n";
 //            #endif
 //            holoLightFrontStatus = HOLO_LED_ON;
 //            holoLightOn(HOLO_FRONT_RED_PWM_PIN, HOLO_FRONT_GREEN_PWM_PIN, HOLO_FRONT_BLUE_PWM_PIN);
-//	}      
+//  }      
         
 //        silenceServos();
         MaestroBody.restartScript(2); //Short Head Nod
@@ -1683,7 +1683,7 @@ void ps3ToggleSettings(PS3BT* myPS3 = PS3Nav)
 
     if(myPS3->getButtonPress(L2)&&myPS3->getButtonClick(CROSS))
     {
-	  if(isAutomateDomeOn)
+    if(isAutomateDomeOn)
       {
         #ifdef SHADOW_DEBUG
           output += "Disabling the Dome Automation\r\n";        
@@ -1694,7 +1694,7 @@ void ps3ToggleSettings(PS3BT* myPS3 = PS3Nav)
         SyR->stop();
         action = 0;
 //        trigger.play(66);
-	  }
+    }
     }
     if(myPS3->getButtonPress(L2)&&myPS3->getButtonClick(CIRCLE))
     {
@@ -1812,7 +1812,7 @@ void processSoundCommand(char soundCommand)
             output += soundCommand;
             output += " - CH33P Chatter\r\n";
           #endif
-          trigger.play(random(1,6)); 
+          trigger.play(random(5,16)); 
           break;
         case '2':   
           #ifdef SHADOW_DEBUG    
@@ -1820,7 +1820,7 @@ void processSoundCommand(char soundCommand)
             output += soundCommand;
             output += " - Scream\r\n";
           #endif        
-          trigger.play(random(7,9));
+          trigger.play(random(17,20));
           break;
         case '3':    
           #ifdef SHADOW_DEBUG    
@@ -1828,7 +1828,7 @@ void processSoundCommand(char soundCommand)
             output += soundCommand;
             output += " - Fail\r\n";
           #endif        
-          trigger.play(random(14,15));
+          trigger.play(random(1,4));
           break;
         case '4':    
           #ifdef SHADOW_DEBUG    
@@ -1836,7 +1836,7 @@ void processSoundCommand(char soundCommand)
             output += soundCommand;
             output += " - Laugh\r\n";
           #endif        
-          trigger.play(random(10,13));
+          trigger.play(random(21,22));
           MaestroBody.restartScript(1);
           break;
         case '5':    
@@ -1845,15 +1845,15 @@ void processSoundCommand(char soundCommand)
             output += soundCommand;
             output += " - Seagulls\r\n";
           #endif        
-          trigger.play(37);
+          trigger.play(23);
           break;
         case '6':    
           #ifdef SHADOW_DEBUG    
             output += "Sound Button ";
             output += soundCommand;
-            output += " - Cowboy Bebop Remix\r\n";
+            output += " - Robot Rock\r\n";
           #endif       
-          trigger.play(38);
+          trigger.play(24);
           break;
         case '7':    
           #ifdef SHADOW_DEBUG    
@@ -1861,7 +1861,7 @@ void processSoundCommand(char soundCommand)
             output += soundCommand;
             output += " - Imperial Remix\r\n";
           #endif        
-          trigger.play(39);
+          trigger.play(26);
           break;
         case '8':
             #ifdef SHADOW_DEBUG    
@@ -1869,7 +1869,7 @@ void processSoundCommand(char soundCommand)
               output += soundCommand;
               output += " - Mando Synthwave\r\n";
             #endif
-            trigger.play(40);
+            trigger.play(25);
         break;
         case '9':
             #ifdef SHADOW_DEBUG    
@@ -1877,7 +1877,8 @@ void processSoundCommand(char soundCommand)
               output += soundCommand;
               output += " - Random Idle\r\n";
             #endif
-            trigger.play(random(17,26));
+            trigger.play(random(1,20));
+            MaestroBody.restartScript(4); //Open and Close Doors
         break;
         case '0':
             #ifdef SHADOW_DEBUG    
@@ -1885,7 +1886,8 @@ void processSoundCommand(char soundCommand)
               output += soundCommand;
               output += " - Random Mechanical\r\n";
             #endif
-            trigger.play(random(27,36));
+            trigger.play(random(1,20));
+            MaestroBody.restartScript(4); //Open and Close Doors
         break;
         case 'A':
             #ifdef SHADOW_DEBUG    
@@ -1947,49 +1949,49 @@ void ps3soundControl(PS3BT* myPS3 = PS3Nav, int controllerNumber = 1)
     {
       case 1:
 #endif
-    	if (!(myPS3->getButtonPress(L1)||myPS3->getButtonPress(L2)||myPS3->getButtonPress(PS)))
-	    {
-	      if (myPS3->getButtonClick(UP))          processSoundCommand('1');    
-	      else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('2');    
-	      else if (myPS3->getButtonClick(DOWN))   processSoundCommand('3');    
-	      else if (myPS3->getButtonClick(LEFT))   processSoundCommand('4');    
-	    } else if (myPS3->getButtonPress(L2))
-	    {
-	      if (myPS3->getButtonClick(UP))          processSoundCommand('5');    
-	      else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('6');    
-	      else if (myPS3->getButtonClick(DOWN))   processSoundCommand('7');    
-	      else if (myPS3->getButtonClick(LEFT))   processSoundCommand('8');    
-	    } else if (myPS3->getButtonPress(L1))
-	    {
-	      if (myPS3->getButtonClick(UP))          processSoundCommand('+');    
-	      else if (myPS3->getButtonClick(DOWN))   processSoundCommand('-');    
-	      else if (myPS3->getButtonClick(LEFT))   processSoundCommand('9');    
-	      else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('0');    
-	    } 
+      if (!(myPS3->getButtonPress(L1)||myPS3->getButtonPress(L2)||myPS3->getButtonPress(PS)))
+      {
+        if (myPS3->getButtonClick(UP))          processSoundCommand('1');    
+        else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('2');    
+        else if (myPS3->getButtonClick(DOWN))   processSoundCommand('3');    
+        else if (myPS3->getButtonClick(LEFT))   processSoundCommand('4');    
+      } else if (myPS3->getButtonPress(L2))
+      {
+        if (myPS3->getButtonClick(UP))          processSoundCommand('5');    
+        else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('6');    
+        else if (myPS3->getButtonClick(DOWN))   processSoundCommand('7');    
+        else if (myPS3->getButtonClick(LEFT))   processSoundCommand('8');    
+      } else if (myPS3->getButtonPress(L1))
+      {
+        if (myPS3->getButtonClick(UP))          processSoundCommand('+');    
+        else if (myPS3->getButtonClick(DOWN))   processSoundCommand('-');    
+        else if (myPS3->getButtonClick(LEFT))   processSoundCommand('9');    
+        else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('0');    
+      } 
 #ifdef EXTRA_SOUNDS
         break;
       case 2:
-    	if (!(myPS3->getButtonPress(L1)||myPS3->getButtonPress(L2)||myPS3->getButtonPress(PS)))
-	    {
-	      if (myPS3->getButtonClick(UP))          processSoundCommand('A');    
-	      else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('B');    
-	      else if (myPS3->getButtonClick(DOWN))   processSoundCommand('C');    
-	      else if (myPS3->getButtonClick(LEFT))   processSoundCommand('D');    
-	    } else if (myPS3->getButtonPress(L2))
-	    {
-	      if (myPS3->getButtonClick(UP))          processSoundCommand('E');    
-	      else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('F');    
-	      else if (myPS3->getButtonClick(DOWN))   processSoundCommand('G');    
-	      else if (myPS3->getButtonClick(LEFT))   processSoundCommand('H');    
-	    } else if (myPS3->getButtonPress(L1))
-	    {
-	      if (myPS3->getButtonClick(UP))          processSoundCommand('I');    
-	      else if (myPS3->getButtonClick(DOWN))   processSoundCommand('J');    
-	      else if (myPS3->getButtonClick(LEFT))   processSoundCommand('K');    
-	      else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('L');    
-	    } 
+      if (!(myPS3->getButtonPress(L1)||myPS3->getButtonPress(L2)||myPS3->getButtonPress(PS)))
+      {
+        if (myPS3->getButtonClick(UP))          processSoundCommand('A');    
+        else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('B');    
+        else if (myPS3->getButtonClick(DOWN))   processSoundCommand('C');    
+        else if (myPS3->getButtonClick(LEFT))   processSoundCommand('D');    
+      } else if (myPS3->getButtonPress(L2))
+      {
+        if (myPS3->getButtonClick(UP))          processSoundCommand('E');    
+        else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('F');    
+        else if (myPS3->getButtonClick(DOWN))   processSoundCommand('G');    
+        else if (myPS3->getButtonClick(LEFT))   processSoundCommand('H');    
+      } else if (myPS3->getButtonPress(L1))
+      {
+        if (myPS3->getButtonClick(UP))          processSoundCommand('I');    
+        else if (myPS3->getButtonClick(DOWN))   processSoundCommand('J');    
+        else if (myPS3->getButtonClick(LEFT))   processSoundCommand('K');    
+        else if (myPS3->getButtonClick(RIGHT))  processSoundCommand('L');    
+      } 
         break;
-	}
+  }
 #endif
 
 }
