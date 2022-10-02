@@ -1607,6 +1607,7 @@ void ps3utilityArms(PS3BT* myPS3 = PS3Nav, int controllerNumber = 1)
                 }
                 else{
                   MaestroBody.restartScript(0); //close util arm
+                  isUtilArmOpen = false;
                 }
                 
           }
@@ -1848,7 +1849,7 @@ void processSoundCommand(char soundCommand)
             output += " - Laugh\r\n";
           #endif        
           trigger.play(random(21,22));
-          MaestroBody.restartScript(1);
+          MaestroBody.restartScript(1); //multiple head nods
           break;
         case '5':    
           #ifdef SHADOW_DEBUG    
@@ -1889,7 +1890,7 @@ void processSoundCommand(char soundCommand)
               output += " - Random Idle\r\n";
             #endif
             trigger.play(random(1,20));
-            MaestroBody.restartScript(4); //Open and Close Doors
+            //MaestroBody.restartScript(4); //Open and Close Doors
         break;
         case '0':
             #ifdef SHADOW_DEBUG    
@@ -1898,7 +1899,7 @@ void processSoundCommand(char soundCommand)
               output += " - Random Mechanical\r\n";
             #endif
             trigger.play(random(1,20));
-            MaestroBody.restartScript(4); //Open and Close Doors
+            //MaestroBody.restartScript(4); //Open and Close Doors
         break;
         case 'A':
             #ifdef SHADOW_DEBUG    
