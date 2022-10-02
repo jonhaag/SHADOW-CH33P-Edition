@@ -1,7 +1,7 @@
 // =======================================================================================
 //                 SHADOW :  Small Handheld Arduino Droid Operating Wand
 // =======================================================================================
-//                          Last Revised Date: 3/26/2022
+//                          Last Revised Date: 10/2/2022
 //                             Written By: KnightShade
 //                        Inspired by the PADAWAN by danf
 //                      Bug Fixes from BlackSnake and vint43
@@ -145,6 +145,7 @@ const int UTILITY_ARM_TOP_PIN   = 49;
 const int UTILITY_ARM_BOTTOM_PIN  = 50;
 const int Card_Dispense_Pin = 51;
 
+boolean isUtilArmOpen = false;
 
 int utilArmClosedPos = 0;    // variable to store the servo closed position 
 int utilArmOpenPos = 140;    // variable to store the servo Opened position 
@@ -231,6 +232,8 @@ CFSoundIII cfSound;
 // ---------------------------------------------------------------------------------------
 //                          Variables
 // ---------------------------------------------------------------------------------------
+
+boolean areDoorsOpen = false;
 
 long previousDomeMillis = millis();
 long previousFootMillis = millis();
@@ -1588,7 +1591,8 @@ void ps3utilityArms(PS3BT* myPS3 = PS3Nav, int controllerNumber = 1)
               #endif
               
                 //waveUtilArm(UTIL_ARM_TOP);
-                MaestroBody.restartScript(0);
+                MaestroBody.restartScript(4); //open & close doors
+                
           }
           if(myPS3->getButtonPress(L1)&&myPS3->getButtonClick(CIRCLE))
           {
@@ -1597,7 +1601,14 @@ void ps3utilityArms(PS3BT* myPS3 = PS3Nav, int controllerNumber = 1)
               #endif
               
                 //waveUtilArm(UTIL_ARM_BOTTOM);
-                MaestroBody.restartScript(5);
+                if(isUtilArmOpen == false){
+                  MaestroBody.restartScript(5); //open util arm
+                  isUtilArmOpen = true;
+                }
+                else{
+                  MaestroBody.restartScript(0); //close util arm
+                }
+                
           }
         break;
       case 2:
